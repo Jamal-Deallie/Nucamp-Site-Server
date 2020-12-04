@@ -1,26 +1,43 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const partnerSchema = new Schema({
-    name: {
-      type: String,
-      required: true
-    },
-    image: {
-      type: String,
-      required: true
-    },
-    featured: {
-      type: Boolean,
-      default: false
-    },
-    description: {
-      type: String,
-      required: true
-}, 
-    timestamps: true
-});
+// Below I updated the way timestamps are set in the schema.
+// There is the first object arugment to the Schema that defines the rules for the fields
+// Then an optional second object argument for configuration options
+const partnerSchema = new Schema(
+	// First Object Argument for field rules
+	{
+		name: {
+			type: String,
+			required: true,
+		},
+		image: {
+			type: String,
+			required: true,
+		},
+		featured: {
+			type: Boolean,
+			default: false,
+		},
+		description: {
+			type: String,
+			required: true,
+		},
+	},
+	// Second Object Argument for configuration
+	{
+		timestamps: true,
+	}
+);
+// 	timestamps: true,
+// });
 
-const Partners = mongoose.model('Partners', partnerSchema);
+// Must pass in the upper cased, singular version of the collection
+// name you want to use (e.g. Partner for partners collection)
+// along with a Schema
+// const Partners = mongoose.model('Partners', partnerSchema);
+const Partner = mongoose.model('Partner', partnerSchema);
 
-module.exports = Partners;
+// Here we would then want to export Partner instead of Partners
+// module.exports = Partners;
+module.exports = Partner;
