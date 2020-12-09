@@ -1,13 +1,11 @@
 const express = require('express');
 const promotionRouter = express.Router();
-// We need to import the Promotion Model so we can use it throughout our promotion router
-// and change all of the plural promotions to singular Promotion in the routes below
+const authenticate = require('../authenticate');
 const Promotion = require('../models/Promotions');
 
 promotionRouter
 	.route('/')
 	.get((req, res, next) => {
-		// promotions
 		Promotion.find()
 			.then((promotions) => {
 				res.statusCode = 200;
@@ -16,8 +14,8 @@ promotionRouter
 			})
 			.catch((err) => next(err));
 	})
-	.post(authenticate.verifyUser, (req, res) => {
-		// promotions
+	.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
+
 		Promotion.create(req.body)
 			.then((promotions) => {
 				console.log('promotions Created ', promotions);
@@ -31,8 +29,7 @@ promotionRouter
 		res.statusCode = 403;
 		res.end('PUT operation not supported on /promotions');
 	})
-	.delete(authenticate.verifyUser, (req, res, next) => {
-		// promotions
+	.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
 		Promotion.deleteMany()
 			.then((response) => {
 				res.statusCode = 200;
@@ -42,11 +39,9 @@ promotionRouter
 			.catch((err) => next(err));
 	});
 
-// partnerRouter.route('/:promotionsId')
 promotionRouter
 	.route('/:promotionsId')
 	.get((req, res, next) => {
-		// promotions
 		Promotion.findById(req.params.promotionsId)
 			.then((promotions) => {
 				res.statusCode = 200;
@@ -59,7 +54,7 @@ promotionRouter
 		res.statusCode = 403;
 		res.end(`POST operation not supported on /promotions/${req.params.promotionsId}`);
 	})
-	.put(authenticate.verifyUser, (req, res, next) => {
+	.put(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
 		Promotion.findByIdAndUpdate(
 			req.params.promotionsId,
 			{
@@ -74,7 +69,7 @@ promotionRouter
 			})
 			.catch((err) => next(err));
 	})
-	.delete(authenticate.verifyUser, (req, res, next) => {
+	.delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
 		Promotion.findByIdAndDelete(req.params.promotionsId)
 			.then((response) => {
 				res.statusCode = 200;

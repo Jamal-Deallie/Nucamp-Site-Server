@@ -1,7 +1,6 @@
 const express = require('express');
 const partnerRouter = express.Router();
-// We need to import the Partner Model so we can use it throughout our partner router
-// and change all of the plural Partners to singular Partner in the routes below
+const authenticate = require('../authenticate');
 const Partner = require('../models/partners');
 
 partnerRouter
@@ -15,7 +14,7 @@ partnerRouter
 			})
 			.catch((err) => next(err));
 	})
-	.post(authenticate.verifyUser, (req, res) => {
+	.post(authenticate.verifyUser, authenticate.verifyAdmin,(req, res) => {
 		Partner.create(req.body)
 			.then((partners) => {
 				console.log('Partners Created ', partners);
@@ -29,7 +28,7 @@ partnerRouter
 		res.statusCode = 403;
 		res.end('PUT operation not supported on /partners');
 	})
-	.delete(authenticate.verifyUser, (req, res, next) => {
+	.delete(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
 		Partner.deleteMany()
 			.then((response) => {
 				res.statusCode = 200;
@@ -54,7 +53,7 @@ partnerRouter
 		res.statusCode = 403;
 		res.end(`POST operation not supported on /partners/${req.params.partnersId}`);
 	})
-	.put(authenticate.verifyUser, (req, res, next) => {
+	.put(authenticate.verifyUser,authenticate.verifyAdmin, (req, res, next) => {
 		Partner.findByIdAndUpdate(
 			req.params.partnersId,
 			{
@@ -69,7 +68,7 @@ partnerRouter
 			})
 			.catch((err) => next(err));
 	})
-	.delete(authenticate.verifyUser, (req, res, next) => {
+	.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
 		Partner.findByIdAndDelete(req.params.partnersId)
 			.then((response) => {
 				res.statusCode = 200;

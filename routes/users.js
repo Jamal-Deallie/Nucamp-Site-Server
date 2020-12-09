@@ -7,7 +7,13 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
+    if (req.user.admin) {
+        res.redirect('/');
+    } else {
+        const err = new Error('You are not an Administrator');
+        err.status = 401;
+        return next(err);
+        }
 });
 
 router.post('/signup', (req, res) => {
