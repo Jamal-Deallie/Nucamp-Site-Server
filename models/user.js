@@ -3,10 +3,23 @@ const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = new Schema({
-  admin: {
-      type: Boolean,
-      default: false
-  }
+	admin: {
+		type: Boolean,
+		default: false,
+	},
+	/*********
+	 *
+	 *  The user schema was missing the first and last name that it was updated with during the week.
+	 *
+	 ********/
+	firstname: {
+		type: String,
+		default: '',
+	},
+	lastname: {
+		type: String,
+		default: '',
+	},
 });
 
 userSchema.plugin(passportLocalMongoose);
